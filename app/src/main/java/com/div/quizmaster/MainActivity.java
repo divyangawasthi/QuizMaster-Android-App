@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         binding.highestScoreText.setText(MessageFormat.format("Highest: {0}", String.valueOf(prefs.getHighestScore())));
-        binding.scoreText.setText(MessageFormat.format("Current Score: {0}",
+        binding.scoreText.setText(MessageFormat.format("{0}",
                 String.valueOf(score.getScore())));
 
         questionList = new Repository().getQuestions(questionArrayList -> {
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             deductPoints();
             snackMessageId = R.string.incorrect;
-            shakeAnimation();
+            fadeAnimation2();
         }
         Snackbar.make(binding.cardView, snackMessageId, Snackbar.LENGTH_SHORT)
                 .show();
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateCounter(ArrayList<Question> questionArrayList) {
         binding.textViewOutOf.setText(String.format(getString(R.string.text_formatted),
-                currentQuestionIndex, questionArrayList.size()));
+                currentQuestionIndex+1, questionArrayList.size()));
     }
 
     private void fadeAnimation() {
@@ -137,16 +137,18 @@ public class MainActivity extends AppCompatActivity {
         updateCounter((ArrayList<Question>) questionList);
     }
 
-    private void shakeAnimation() {
-        Animation shake = AnimationUtils.loadAnimation(MainActivity.this,
-                R.anim.shake_animation);
-        binding.cardView.setAnimation(shake);
+    private void fadeAnimation2() {
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
+        alphaAnimation.setDuration(300);
+        alphaAnimation.setRepeatCount(1);
+        alphaAnimation.setRepeatMode(Animation.REVERSE);
 
-        shake.setAnimationListener(new Animation.AnimationListener() {
+        binding.cardView.setAnimation(alphaAnimation);
+
+        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
                 binding.questionTextview.setTextColor(Color.RED);
-
             }
 
             @Override
@@ -170,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         if (scoreCounter > 0) {
             scoreCounter -= 100;
             score.setScore(scoreCounter);
-            binding.scoreText.setText(MessageFormat.format("Current Score: {0}",
+            binding.scoreText.setText(MessageFormat.format("{0}",
                     String.valueOf(score.getScore())));
 
         } else {
@@ -184,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         scoreCounter += 100;
         score.setScore(scoreCounter);
         binding.scoreText.setText(String.valueOf(score.getScore()));
-        binding.scoreText.setText(MessageFormat.format("Current Score: {0}",
+        binding.scoreText.setText(MessageFormat.format("{0}",
                 String.valueOf(score.getScore())));
 
     }
